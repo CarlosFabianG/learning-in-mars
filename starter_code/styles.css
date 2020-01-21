@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    text-align: center;
+}
+
+.board {
+   
+    top: 100px;
+    left: 200px;
+}
+
+canvas {
+   
+    margin: 0;
+}
+
+button {
+    height: 50px;
+    width: 100px;
+    border: 1px solid whitesmoke;
+    background-color: black;
+    color: white;
+}
