@@ -57,7 +57,7 @@ class Astronaut {
         this.spriteHeight = 40,
         this.sx = 0,
         this.sy = 0,
-        this.width = 29
+        //this.width = 29
         //this.jump = this.y - 50,
         this.imgAstronaut = new Image(),
         this.imgAstronaut.src = images.astronauts
@@ -103,20 +103,59 @@ class Dron {
 constructor(imgType){
     this.x = 600,
     this.y = 430,
-    this.height = 120,
-    this.width = 690,
+    this.sx = 0,
+    this.sy = 0,
+    this.dronInterval = 0
+    this.spriteHeight = 120,
+    this.spriteWidth = 680 / 5,
+    //this.width = 138,
     this.imgDron = new Image(),
     this.imgDron.src = images.drones,
     this.imgType = imgType
 }
 drawDron(){
     this.x -= 1
-    ctx.drawImage(this.imgDron, this.x, this.y, this.width, this.height)
-    ctx.drawImage(this.imgDron, this.x, this.y-150, this.width, this.height)
-    ctx.drawImage(this.imgDron, this.x, this.y-300, this.width, this.height)
-}
+    if(this.sx >= 690) this.sx = 0
+    ctx.drawImage(this.imgDron, 
+        this.sx, 
+        this.sy, 
+        this.spriteWidth, 
+        this.spriteHeight, 
+        this.x, 
+        this.y, 
+        this.spriteWidth, 
+        this.spriteHeight)
+
+
+
+    ctx.drawImage(this.imgDron,
+        this.sx, 
+        this.sy, 
+        this.spriteWidth,
+        this.spriteHeight,
+        this.x,
+        this.y-150, 
+        this.spriteWidth, 
+        this.spriteHeight)
+
+
+
+    ctx.drawImage(this.imgDron, 
+        this.sx, 
+        this.sy,
+        this.spriteWidth,
+        this.spriteHeight,
+        this.x,
+        this.y-300, 
+        this.spriteWidth, 
+        this.spriteHeight)
 }
 
+spinning(){
+    
+    this.sx +=150
+}
+}
 
 const board = new Board()
 const robot = new Robot()
@@ -128,7 +167,6 @@ function startGame (){
   robot.drawRobot()
   dron.drawDron()
   astronaut.drawAstronaut()
-
 }
 
 function update(){
@@ -136,14 +174,15 @@ function update(){
     board.drawBoard()
     dron.drawDron()
     astronaut.drawAstronaut()
-    //astronaut.goLeft()
     robot.drawRobot()
     astronaut.gravity()
+    dron.spinning()
     
 }
 
 function start(){
-    interval = setInterval(update, 1000 / 60)
+    interval = setInterval(update, 1000 / 20)
+    
 }
 
 document.addEventListener('keydown', ({keyCode}) => {
