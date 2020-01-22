@@ -1,17 +1,21 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+let frames = 0
+let interval
+
 
 
 images = {
 background: './images/mars_background.jpg',
 robot: './images/ia_robot.png',
 drones: './images/drones.png',
-astronaut: './images/astronaut.png'
+astronauts: './images/astronaut.png'
 }
 
 window.onload = function() {
     document.getElementById("start-button").onclick = function() {
       startGame();
+      start()
     };
   }
 
@@ -36,7 +40,7 @@ class Robot {
         this.x = 500,
         this.y = 70,
         this.width = 60
-        this.height = 80
+        this.height = 80,
         this.imgRobot = new Image,
         this.imgRobot.src = images.robot
     }
@@ -47,29 +51,69 @@ class Robot {
 
 class Astronaut {
     constructor(){
-        this.x = 200,
-        this.y = 450,
-        this.width = 50,
-        this.height = 40,
-        this.imgAstronaut = new Image,
-        this.imgAstronaut.src = images.astronaut
+        this.x = 100,
+        this.y = 480,
+        this.spriteWidth = 87 / 3,
+        this.spriteHeight = 40,
+        this.sx = 0,
+        this.sy = 0,
+        this.width = 29
+        //this.jump = this.y - 50,
+        this.imgAstronaut = new Image(),
+        this.imgAstronaut.src = images.astronauts
     }
     drawAstronaut(){
-        ctx.drawImage(this.imgAstronaut, this.x, this.y, this.width, this.height)
+        if(this.sx >= 87) this.sx = 0
+        ctx.drawImage(
+            this.imgAstronaut, 
+            this.sx,
+            this.sy,
+            this.spriteWidth,
+            this.spriteHeight,
+            this.x,
+            this.y,
+            this.spriteWidth,
+            this.spriteHeight
+            )
+    }
+
+    goLeft(){
+        this.sx += 29
+        this.x -= 10
+    }
+
+    goRight(){
+        this.sx += 29
+        this.x += 10
+    }
+
+    jump(){
+        this.y -= 70
+    }
+
+
+    gravity(){
+        if(this.y < 480){
+        this.y += 1
+        }
     }
 }
 
 class Dron {
-constructor(){
+constructor(imgType){
     this.x = 600,
-    this.y = 200,
-    this.height = 300,
-    this.width = 300,
+    this.y = 430,
+    this.height = 120,
+    this.width = 690,
     this.imgDron = new Image(),
-    this.imgDron.src = images.drones
+    this.imgDron.src = images.drones,
+    this.imgType = imgType
 }
 drawDron(){
+    this.x -= 1
     ctx.drawImage(this.imgDron, this.x, this.y, this.width, this.height)
+    ctx.drawImage(this.imgDron, this.x, this.y-150, this.width, this.height)
+    ctx.drawImage(this.imgDron, this.x, this.y-300, this.width, this.height)
 }
 }
 
@@ -77,15 +121,45 @@ drawDron(){
 const board = new Board()
 const robot = new Robot()
 const dron = new Dron()
-const starMan = new Astronaut()
+const astronaut = new Astronaut()
 
 function startGame (){
   board.drawBoard()
   robot.drawRobot()
   dron.drawDron()
-  starMan.drawAstronaut()
+  astronaut.drawAstronaut()
 
 }
+
+function update(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    board.drawBoard()
+    dron.drawDron()
+    astronaut.drawAstronaut()
+    //astronaut.goLeft()
+    robot.drawRobot()
+    astronaut.gravity()
+    
+}
+
+function start(){
+    interval = setInterval(update, 1000 / 60)
+}
+
+document.addEventListener('keydown', ({keyCode}) => {
+    if(keyCode == 37){
+        astronaut.goLeft()
+    }
+    if(keyCode == 39){
+        astronaut.goRight()
+    }
+    if(keyCode == 38){
+        astronaut.jump()
+        
+    }
+})
+
+
 
 
 
