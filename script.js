@@ -320,6 +320,10 @@ function score(){
 
 function gameOver(){
     clearInterval(interval)
+    let over = 'Game Over'
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText(over, 400, 300)
 }
 
 document.addEventListener('keydown', ({keyCode}) => {
