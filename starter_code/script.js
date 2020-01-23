@@ -6,7 +6,8 @@ const ctx = canvas.getContext('2d');
 //Variables globales
 let frames = 0
 let interval
-let counter = 0
+let counterPlayer1 = 0
+let counterPlayer2 = 0
 const dronesArr = []
 const laserArr = []
 
@@ -209,9 +210,9 @@ spinning(){
 touchDron(laser){
  return (
      this.x < laser.x + laser.width &&
-     this.x + this.width > laser.x  &&
+     this.x + this.spriteWidth > laser.x  &&
      this.y < laser.y + laser.height &&
-     this.y + this.height > laser.y
+     this.y + this.spriteHeight > laser.y
  )
 }
 
@@ -239,13 +240,13 @@ function update(){
     drawDron()
     checkCollision()
     laserTrajectory()
+    score()
 }
 
 function start(){
     interval = setInterval(update, 1000 / 20)
     
 }
-
 
 function startGame (){
   board.drawBoard()
@@ -270,9 +271,7 @@ function drawDron(){
 }
 
 function generateLaser(){
-    if(laser.type){
    laserArr.push(new Laser(astronaut.x, astronaut.y))
-    }
 }
 
 function laserTrajectory(){
@@ -284,20 +283,39 @@ function laserTrajectory(){
 }
 
 function checkCollision(){
+    
     dronesArr.forEach((dron, i) => {
-   if(dron.x + dron.width <= 0){
-        //dronesArr.splice(i,1)
-        gameOver()
+   if(dron.x + dron.spriteWidth <= 0) return gameOver()
+
+   laserArr.forEach( (laser,j) => {
+    if(dron.touchDron(laser)){
+        dronesArr.splice(i,1)
+        laserArr.splice(j,1)
+       
+        points()
     }
-    } 
+   
+   } 
 )
 
+})
 
-console.log(counter)
+//console.log(counter)
 }
 
 function points(){
-    counter +=1
+    counterPlayer1 +=1
+    console.log(counterPlayer1)
+}
+
+function score(){
+  ctx.fillStyle = "white";
+  ctx.font = "30px Arial";
+  ctx.fillText(counterPlayer1, 415, 110);
+
+  ctx.fillStyle = "white";
+  ctx.font = "30px Arial";
+  ctx.fillText(counterPlayer2, 465, 110);
 }
 
 function gameOver(){
@@ -316,7 +334,7 @@ document.addEventListener('keydown', ({keyCode}) => {
     }
     if(keyCode == 83){
         generateLaser()
-        laserBullet()
+        
     }
 })
 
