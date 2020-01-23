@@ -1,13 +1,16 @@
+
+//Llamado del canvas con su contexto en 2d
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+
+//Variables globales
 let frames = 0
 let interval
 let counter = 0
-const generateDrones = []
-const activeLaser = []
+const dronesArr = []
+const laserArr = []
 
-
-
+//Objeto con la ubicacion de las imagenes a utilizar
 images = {
 background: './images/mars_background.jpg',
 robot: './images/ia_robot.png',
@@ -17,6 +20,7 @@ astronauts: './images/astronaut.png',
 laser: './images/laser_sprite.png'
 }
 
+//Funcion para cargar el canvas en pantalla e iniciar juego
 window.onload = function() {
     document.getElementById("start-button").onclick = function() {
       startGame();
@@ -63,16 +67,16 @@ class Astronaut {
     constructor(){
         this.x = 100,
         this.y = 480,
-        this.spriteWidth = 87 / 3,
-        this.spriteHeight = 40,
+        this.width = 87 / 3,
+        this.height = 40,
         this.sx = 0,
         this.sy = 0,
         //this.width = 29
         //this.jump = this.y - 50,
         this.imgAstronaut = new Image(),
-        this.imgAstronaut.src = images.astronauts,
-        this.imgLaser = new Image(),
-        this.imgLaser.src = images.laser
+        this.imgAstronaut.src = images.astronauts
+        //this.imgLaser = new Image(),
+        //this.imgLaser.src = images.laser
     }
     drawAstronaut(){
         if(this.sx >= 87) this.sx = 0
@@ -80,12 +84,12 @@ class Astronaut {
             this.imgAstronaut, 
             this.sx,
             this.sy,
-            this.spriteWidth,
-            this.spriteHeight,
+            this.width,
+            this.height,
             this.x,
             this.y,
-            this.spriteWidth,
-            this.spriteHeight
+            this.width,
+            this.height
             )
     }
 
@@ -112,43 +116,33 @@ class Astronaut {
 
     touchDron(dron){
         return(
-            this.x < dron.x && this.x + this.spriteWidth > dron.x
-            && this.y < dron.y + dron.spriteHeight && this.y + this.spriteHeight > dron.y 
+            this.x < dron.x + dron.width && 
+            this.x + this.width > dron.x &&
+            this.y < dron.y + dron.height && 
+            this.y + this.height > dron.y 
         )
     }
 }
 
 class Laser {
     constructor(x, y){
-       this.laserX = x,
-       this.laserY = y,
+       this.x = x,
+       this.y = y,
        this.type = true,
-       this.laserWidth = 50,
-       this.laserHeight = 50,
+       this.width = 50,
+       this.height = 50,
        this.imgLaser = new Image(),
        this.imgLaser.src = images.laser
     }
     draw(){
-        ctx.drawImage(this.imgLaser, this.laserX,this.laserY, this.laserWidth, this.laserHeight) 
+        ctx.drawImage(this.imgLaser, this.x,this.y, this.width, this.height) 
     }
     laserTrajectory(){
         //if(this.type){
-         this.laserX +=5
+         this.x +=5
          
        // }
     }
-
-    shootingDron(dron){
-        
-       //this.laserX < dron.x + dron.spriteWidth && this.laserX + this.laserWidth > dron.x
-       //&& this.laserY < dron.y + dron.spriteHeight && this.laserY + this.laserHeight > dron.y
-
-
-       if(this.laserY === dron.y + dron.spriteHeight && this.laserX === dron.x + dron.spriteWidth){
-             return true
-       }
-        
-    } 
 }
 
 class Dron {
@@ -206,13 +200,47 @@ spinning(){
     
     this.sx +=150
 }
+
+touchDron(laser){
+ return (
+     this.x < laser.x + laser.width &&
+     this.x + this.width > laser.x  &&
+     this.y < laser.y + laser.height &&
+     this.y + this.height > laser.y
+ )
 }
 
+}
+//Declaracion de instancias
 const board = new Board()
 const robot = new Robot()
 const dron = new Dron()
 const astronaut = new Astronaut()
 const laser = new Laser()
+
+
+//Funciones del juego
+function update(){
+    frames += 1
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    board.drawBoard()
+    //dron.drawDron()
+    astronaut.drawAstronaut()
+    robot.drawRobot()
+    robot.drawScreen()
+    astronaut.gravity()
+    dron.spinning()
+    generateDron()
+    drawDron()
+    checkCollision()
+    laserTrajectory()
+}
+
+function start(){
+    interval = setInterval(update, 1000 / 20)
+    
+}
+
 
 function startGame (){
   board.drawBoard()
@@ -224,68 +252,36 @@ function startGame (){
 
 function generateDron(){
     if(frames % 100 === 0){
-   generateDrones.push(new Dron())
+   dronesArr.push(new Dron())
     }
 }
 
 function generateLaser(){
     if(laser.type){
-   activeLaser.push(new Laser(astronaut.x, astronaut.y))
+   laserArr.push(new Laser(astronaut.x, astronaut.y))
     }
 }
 
-function laserBullet(){
-    activeLaser.forEach( laser => laser.draw())
-}
-
 function drawDron(){
-    generateDrones.forEach( dron => dron.drawDron())
+    dronesArr.forEach( dron => dron.drawDron())
 }
 
 function laserTrajectory(){
-    activeLaser.forEach(laser => {
+    laserArr.forEach(laser => {
         laser.laserTrajectory()
         laser.draw()
         
     })
 }
 
-function touchingDron(){
-    generateDrones.forEach(  dron  => astronaut.touchDron(dron) ? gameOver() : null
-    )
-}
-
 function checkCollision(){
-    generateDrones.forEach((dron, i) => {
-    if(dron.x + dron.spriteWidth <= 0){
-        generateDrones.splice(i,1)
-    }
-    laser.shootingDron(dron) ? points() : null
+    dronesArr.forEach((dron, i) => {
+  //  if(dron.x + dron.width <= 0){
+  //      dronesArr.splice(i,1)
+  //  }
+    astronaut.touchDron(dron) ? gameOver() : null
 })
 console.log(counter)
-}
-
-function update(){
-    frames += 1
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    board.drawBoard()
-    laserTrajectory()
-    //dron.drawDron()
-    astronaut.drawAstronaut()
-    robot.drawRobot()
-    robot.drawScreen()
-    astronaut.gravity()
-    dron.spinning()
-    generateDron()
-    drawDron()
-    checkCollision()
-    touchingDron()
-    
-}
-
-function start(){
-    interval = setInterval(update, 1000 / 20)
-    
 }
 
 function points(){
