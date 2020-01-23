@@ -146,22 +146,26 @@ class Laser {
 }
 
 class Dron {
-constructor(imgType){
+constructor(y){
     this.x = 800,
-    this.y = 430,
+    this.y = y,
     this.sx = 0,
     this.sy = 0,
     this.dronInterval = 0
-    this.spriteHeight = 120,
+    this.spriteHeight = 110,
     this.spriteWidth = 680 / 5,
-    this.imgDron = new Image(),
-    this.imgDron.src = images.drones,
-    this.imgType = imgType
+    this.imgDron1 = new Image(),
+    this.imgDron1.src = images.drones
+    //this.imgDron2 = new Image(),
+    //this.imgDron2.src = images.drones,
+    //this.imgDron3 = new Image(),
+    //this.imgDron3.src = images.drones
+    //this.imgType = imgType
 }
 drawDron(){
     this.x -= 3
     if(this.sx >= 690) this.sx = 0
-    ctx.drawImage(this.imgDron, 
+    ctx.drawImage(this.imgDron1, 
         this.sx, 
         this.sy, 
         this.spriteWidth, 
@@ -173,7 +177,7 @@ drawDron(){
 
 
 
-    ctx.drawImage(this.imgDron,
+    /*ctx.drawImage(this.imgDron2,
         this.sx, 
         this.sy, 
         this.spriteWidth,
@@ -182,10 +186,10 @@ drawDron(){
         this.y-150, 
         this.spriteWidth, 
         this.spriteHeight)
+    */
 
 
-
-    ctx.drawImage(this.imgDron, 
+    /*ctx.drawImage(this.imgDron3, 
         this.sx, 
         this.sy,
         this.spriteWidth,
@@ -194,6 +198,7 @@ drawDron(){
         this.y-300, 
         this.spriteWidth, 
         this.spriteHeight)
+        */
 }
 
 spinning(){
@@ -214,7 +219,7 @@ touchDron(laser){
 //Declaracion de instancias
 const board = new Board()
 const robot = new Robot()
-const dron = new Dron()
+const dron = new Dron(0)
 const astronaut = new Astronaut()
 const laser = new Laser()
 
@@ -252,18 +257,22 @@ function startGame (){
 
 function generateDron(){
     if(frames % 100 === 0){
-   dronesArr.push(new Dron())
+   const max = canvas.height - 270
+   const min = canvas.height / 6
+   const randomHeight = Math.floor(Math.random() * max) + min
+   const dron = new Dron(randomHeight)
+   dronesArr.push(dron)
     }
+}
+
+function drawDron(){
+    dronesArr.forEach( dron => dron.drawDron())
 }
 
 function generateLaser(){
     if(laser.type){
    laserArr.push(new Laser(astronaut.x, astronaut.y))
     }
-}
-
-function drawDron(){
-    dronesArr.forEach( dron => dron.drawDron())
 }
 
 function laserTrajectory(){
@@ -276,11 +285,14 @@ function laserTrajectory(){
 
 function checkCollision(){
     dronesArr.forEach((dron, i) => {
-  //  if(dron.x + dron.width <= 0){
-  //      dronesArr.splice(i,1)
-  //  }
-    astronaut.touchDron(dron) ? gameOver() : null
-})
+   if(dron.x + dron.width <= 0){
+        //dronesArr.splice(i,1)
+        gameOver()
+    }
+    } 
+)
+
+
 console.log(counter)
 }
 
