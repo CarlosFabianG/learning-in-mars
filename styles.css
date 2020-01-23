@@ -3,6 +3,11 @@ body {
     text-align: center;
 }
 
+
+h1 {
+    color: white;
+}
+
 .board {
    
     top: 100px;

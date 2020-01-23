@@ -244,7 +244,7 @@ function update(){
 }
 
 function start(){
-    interval = setInterval(update, 1000 / 20)
+    interval = setInterval(update, 1000 / 40)
     
 }
 
@@ -257,7 +257,7 @@ function startGame (){
 }
 
 function generateDron(){
-    if(frames % 100 === 0){
+    if(frames % 50 === 0){
    const max = canvas.height - 270
    const min = canvas.height / 6
    const randomHeight = Math.floor(Math.random() * max) + min
