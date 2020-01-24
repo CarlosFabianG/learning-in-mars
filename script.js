@@ -7,7 +7,9 @@ const ctx = canvas.getContext('2d');
 let frames = 0
 let interval
 let counterPlayer1 = 0
+let player1
 let counterPlayer2 = 0
+let player2 
 const dronesArr = []
 const laserArr = []
 
@@ -23,10 +25,20 @@ laser: './images/laser_sprite.png'
 
 //Funcion para cargar el canvas en pantalla e iniciar juego
 window.onload = function() {
-    document.getElementById("start-button").onclick = function() {
+    document.getElementById("jugador1-button").onclick = function() {
+       player1 = true
+       player2 = false 
       startGame();
       start()
     };
+  }
+
+  document.getElementById("jugador2-button").onclick = function() {
+    player1 = false
+    player2 = true
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   startGame();
+   start()
   }
 
 class Board{
@@ -287,6 +299,7 @@ function checkCollision(){
     dronesArr.forEach((dron, i) => {
    if(dron.x + dron.spriteWidth <= 0) return gameOver()
 
+   
    laserArr.forEach( (laser,j) => {
     if(dron.touchDron(laser)){
         dronesArr.splice(i,1)
@@ -304,8 +317,13 @@ function checkCollision(){
 }
 
 function points(){
+    if(player1){
     counterPlayer1 +=1
     console.log(counterPlayer1)
+    }
+    else if(!player1){
+        counterPlayer2 +=1
+    }
 }
 
 function score(){
@@ -318,13 +336,38 @@ function score(){
   ctx.fillText(counterPlayer2, 465, 110);
 }
 
+function winner(){
+    if(counterPlayer1 > counterPlayer2){
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.fillText('Player1 win', 465, 300);
+    }
+    else if(counterPlayer2 > counterPlayer1){
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.fillText('Player2 win', 465, 300);
+    }
+    else if(counterPlayer1 === counterPlayer2){
+        ctx.fillStyle = "white";
+  ctx.font = "30px Arial";
+  ctx.fillText('Match', 465, 300);
+    }
+}
+
 function gameOver(){
     clearInterval(interval)
+    player1=false
+    player2=true
     let over = 'Game Over'
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
     ctx.fillText(over, 400, 300)
 }
+
+
+
+    
+    
 
 document.addEventListener('keydown', ({keyCode}) => {
     if(keyCode == 37){
