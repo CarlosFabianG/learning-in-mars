@@ -10,8 +10,8 @@ let counterPlayer1 = 0
 let player1
 let counterPlayer2 = 0
 let player2 
-const dronesArr = []
-const laserArr = []
+let dronesArr = []
+let laserArr = []
 
 //Objeto con la ubicacion de las imagenes a utilizar
 images = {
@@ -36,10 +36,14 @@ window.onload = function() {
   document.getElementById("jugador2-button").onclick = function() {
     player1 = false
     player2 = true
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-   startGame();
-   start()
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    restart()
+    startGame();
+   
+    start()
   }
+
+//Declaracion de classes
 
 class Board{
  constructor(){
@@ -256,7 +260,7 @@ function update(){
 }
 
 function start(){
-    interval = setInterval(update, 1000 / 40)
+    interval = setInterval(update, 1000 / 50)
     
 }
 
@@ -269,7 +273,7 @@ function startGame (){
 }
 
 function generateDron(){
-    if(frames % 50 === 0){
+    if(frames % 40 === 0){
    const max = canvas.height - 270
    const min = canvas.height / 6
    const randomHeight = Math.floor(Math.random() * max) + min
@@ -340,18 +344,18 @@ function winner(){
     if(player2){
     if(counterPlayer1 > counterPlayer2){
         ctx.fillStyle = "white";
-        ctx.font = "30px Arial";
-        ctx.fillText('Player1 wins', 465, 300);
+        ctx.font = "40px Arial";
+        ctx.fillText('Player1 wins', 350, 300);
     }
     else if(counterPlayer2 > counterPlayer1){
         ctx.fillStyle = "white";
-        ctx.font = "30px Arial";
-        ctx.fillText('Player2 wins', 465, 300);
+        ctx.font = "40px Arial";
+        ctx.fillText('Player2 wins', 350, 300);
     }
     else if(counterPlayer1 === counterPlayer2){
         ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
-  ctx.fillText('Match', 465, 300);
+  ctx.font = "40px Arial";
+  ctx.fillText('Draw', 400, 300);
     }
 }
 }
@@ -363,12 +367,15 @@ function gameOver(){
     let over = 'Game Over'
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
-    ctx.fillText(over, 400, 300)
+    ctx.fillText(over, 370, 500)
     winner()
 }
 
 
-
+function restart(){
+    laserArr = []
+    dronesArr = []
+}
     
     
 
