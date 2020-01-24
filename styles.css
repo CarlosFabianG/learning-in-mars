@@ -1,6 +1,8 @@
 body {
     background-color: black;
     text-align: center;
+    background-image: url('./images/pag_inicio.png');
+    background-repeat: no-repeat;
 }
 
 
