@@ -328,24 +328,25 @@ function points(){
 
 function score(){
   ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
+  ctx.font = "25px Arial";
   ctx.fillText(counterPlayer1, 415, 110);
 
   ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
-  ctx.fillText(counterPlayer2, 465, 110);
+  ctx.font = "25px Arial";
+  ctx.fillText(counterPlayer2, 460, 110);
 }
 
 function winner(){
+    if(player2){
     if(counterPlayer1 > counterPlayer2){
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText('Player1 win', 465, 300);
+        ctx.fillText('Player1 wins', 465, 300);
     }
     else if(counterPlayer2 > counterPlayer1){
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText('Player2 win', 465, 300);
+        ctx.fillText('Player2 wins', 465, 300);
     }
     else if(counterPlayer1 === counterPlayer2){
         ctx.fillStyle = "white";
@@ -353,15 +354,17 @@ function winner(){
   ctx.fillText('Match', 465, 300);
     }
 }
+}
 
 function gameOver(){
     clearInterval(interval)
-    player1=false
-    player2=true
+    //player1=false
+    //player2=true
     let over = 'Game Over'
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
     ctx.fillText(over, 400, 300)
+    winner()
 }
 
 
